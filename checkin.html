@@ -44,8 +44,11 @@
     </div>
 
     <div id="day1" class="task-list active">
-        <div class="task-item" id="D1-1"> <span>壹、辨識當歸 (望)</span> <button class="btn-verify" onclick="verifyTask('D1-1')">關主認證</button> </div>
-        <div class="task-item" id="D1-2"> <span>貳、聞香識藥 (聞)</span> <button class="btn-verify" onclick="verifyTask('D1-2')">關主認證</button> </div>
+        <div class="task-item" id="D1-1"> <span>望</span> <button class="btn-verify" onclick="verifyTask('D1-1')">關主認證</button> </div>
+        <div class="task-item" id="D1-2"> <span>聞</span> <button class="btn-verify" onclick="verifyTask('D1-2')">關主認證</button> </div>
+        <div class="task-item" id="D1-2"> <span>問</span> <button class="btn-verify" onclick="verifyTask('D1-2')">關主認證</button> </div>
+        <div class="task-item" id="D1-2"> <span>切</span> <button class="btn-verify" onclick="verifyTask('D1-2')">關主認證</button> </div>
+        <div class="task-item" id="D1-2"> <span>抓藥挑戰</span> <button class="btn-verify" onclick="verifyTask('D1-2')">關主認證</button> </div>
         </div>
 
     </div>
@@ -68,8 +71,8 @@
             
             // 傳送資料到 Google Sheets
             // 這裡抓取 localStorage 存的姓名
-            const name = localStorage.getItem('username') || "未知侠客";
-            const grade = localStorage.getItem('usergrade') || "未知系級";
+            const name = localStorage.getItem('username') || "未知俠客";
+            const grade = localStorage.getItem('grade') || "未知系級";
             
             await fetch("你的_GAS_URL", {
                 method: 'POST',
