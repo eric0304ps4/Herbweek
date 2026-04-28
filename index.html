@@ -103,39 +103,57 @@
 </div>
 
 <script>
-    // 請貼上你剛剛在 Google Apps Script 複製的 URL
+    // 你的 Google Apps Script 網址
     const GAS_URL = "https://script.google.com/macros/s/AKfycbyY3ScAVhA57OcmUW4QFHmJ2Ofd5MJr06legZXizVtpQwyKZgM5CzYeQS7bNQvmcXB5/exec";
 
     async function submitData() {
-        const name = document.getElementById('username').value;
-        const grade = document.getElementById('grade');
+        // 1. 抓取 HTML 元素
+        const nameInput = document.getElementById('username');
+        const gradeInput = document.getElementById('grade');
+        const scoreInput = document.getElementById('score');
         const status = document.getElementById('status');
 
-        if (!name) {
-            alert("請先輸入姓名！");
+        // 2. 取得數值
+        const name = nameInput.value;
+        const grade = gradeInput.value;
+        const score = scoreInput.value;
+
+        // 3. 檢查必填欄位
+        if (!name || !grade) {
+            alert("請先輸入姓名與系級！");
             return;
         }
 
         status.innerText = "資料傳送中...";
 
-        // ...前面的 fetch 代碼...
-
         try {
-            const response = await fetch(GAS_URL, {
+            // 發送資料到 Google Sheets
+            // 注意：GAS POST 有時會遇到 CORS 問題，通常我們會加 mode: 'no-cors'
+            await fetch(GAS_URL, {
                 method: 'POST',
-                body: JSON.stringify({ name: name, score: parseInt(score) })
+                mode: 'no-cors', // 加入這行可以避免部分瀏覽器的跨網域錯誤
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    grade: grade, // 記得把系級也傳過去
+                    score: parseInt(score)
+                })
             });
             
-            status.innerHTML = "<span style='color:green'>報到成功！正在傳送至大殿...</span>";
+            // 只要沒噴錯，就顯示成功並跳轉
+            status.innerHTML = "<span style='color:green'>報到成功！正在傳送至大廳...</span>";
             
-            // 關鍵：等待 1.5 秒後跳轉，讓使用者看清楚成功訊息
             setTimeout(() => {
                 window.location.href = "dashboard.html";
             }, 1500);
             
         } catch (error) {
-            // ...錯誤處理...
+            status.innerHTML = "<span style='color:red'>傳輸失敗，請檢查網路連線。</span>";
+            console.error("Error:", error);
         }
+    } // 這裡補上 submitData 的結尾括號
 </script>
 
 </body>
