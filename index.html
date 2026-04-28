@@ -141,6 +141,11 @@
                     score: parseInt(score)
                 })
             });
+
+                // --- 在這裡加入 LocalStorage 存檔 ---
+            localStorage.setItem('username', name);  // 儲存姓名
+            localStorage.setItem('usergrade', grade); // 儲存系級
+    // ---------
             
             // 只要沒噴錯，就顯示成功並跳轉
             status.innerHTML = "<span style='color:green'>報到成功！正在傳送至大廳...</span>";
