@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>岐黃百草園 - 門派報到</title>
+    <title>2026中藥周 - 活動報到</title>
     <style>
         /* 視覺風格：羊皮紙與古風 */
         body {
@@ -81,18 +81,23 @@
 <body>
 
 <div class="scroll-container">
-    <h1>岐黃百草園</h1>
-    <p>—— 門派報到處 ——</p>
+    <h1>2026中藥周</h1>
+    <p>—— 活動報到處 ——</p>
     
     <div class="input-group">
-        <label>刻下尊號 (姓名)</label>
-        <input type="text" id="username" placeholder="例：李大夫">
+        <label>輸入姓名</label>
+        <input type="text" id="username" placeholder="例：陳品翰大帥哥">
     </div>
 
+    <div class="input-group">
+        <label>輸入系級</label>
+        <input type="text" id="grade" placeholder="中醫一">
+    </div>
+    
     <div class="input-group" style="display:none;"> <input type="number" id="score" value="0">
     </div>
 
-    <button onclick="submitData()">簽署同盟籙，進入谷內</button>
+    <button onclick="submitData()">準備好了嗎？點擊我後活動開始</button>
     
     <div id="status"></div>
 </div>
@@ -107,11 +112,11 @@
         const status = document.getElementById('status');
 
         if (!name) {
-            alert("請先報上尊號！");
+            alert("請先輸入姓名！");
             return;
         }
 
-        status.innerText = "正在傳輸靈力 (資料傳送中)...";
+        status.innerText = "資料傳送中...";
 
         try {
             const response = await fetch(GAS_URL, {
