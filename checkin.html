@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>望聞問切 - 修煉之路</title>
+    <style>
+        body { background-color: #2c3e50; font-family: "Microsoft JhengHei", sans-serif; color: #4a3728; padding: 20px; }
+        .container { background: #f4e4bc; border: 5px solid #8b4513; max-width: 500px; margin: auto; padding: 20px; border-radius: 10px; }
+        .day-tabs { display: flex; justify-content: space-around; margin-bottom: 20px; border-bottom: 2px solid #8b4513; padding-bottom: 10px; }
+        .day-tab { cursor: pointer; padding: 5px 10px; font-weight: bold; border: 1px solid transparent; }
+        .day-tab.active { border: 1px solid #8b4513; background: #8b4513; color: white; border-radius: 5px; }
+        
+        .task-list { display: none; }
+        .task-list.active { display: block; }
+        
+        .task-item { 
+            background: rgba(139, 69, 19, 0.1); 
+            margin: 10px 0; 
+            padding: 15px; 
+            border-left: 5px solid #8b4513;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .btn-verify { background: #2d5a27; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 3px; }
+        .completed { background: #d4edda; border-left-color: #28a745; }
+        .completed .btn-verify { display: none; }
+        .completed::after { content: "✓ 已認證"; color: #28a745; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 style="text-align:center; color:#2d5a27;">📜 望聞問切：五日修煉</h2>
+    
+    <div class="day-tabs">
+        <div class="day-tab active" onclick="showDay(1)">第一日</div>
+        <div class="day-tab" onclick="showDay(2)">第二日</div>
+        <div class="day-tab" onclick="showDay(3)">第三日</div>
+        <div class="day-tab" onclick="showDay(4)">第四日</div>
+        <div class="day-tab" onclick="showDay(5)">第五日</div>
+    </div>
+
+    <div id="day1" class="task-list active">
+        <div class="task-item" id="D1-1"> <span>壹、辨識當歸 (望)</span> <button class="btn-verify" onclick="verifyTask('D1-1')">關主認證</button> </div>
+        <div class="task-item" id="D1-2"> <span>貳、聞香識藥 (聞)</span> <button class="btn-verify" onclick="verifyTask('D1-2')">關主認證</button> </div>
+        </div>
+
+    </div>
+
+<script>
+    const MASTER_KEY = "CMU2026"; // 這是關主才知道的密碼
+
+    function showDay(d) {
+        document.querySelectorAll('.task-list').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.day-tab').forEach(el => el.classList.remove('active'));
+        // 這裡需要對應 ID
+        // ...切換邏輯...
+    }
+
+    async function verifyTask(taskId) {
+        const key = prompt("請關主輸入認證金鑰：");
+        if (key === MASTER_KEY) {
+            // 標記 UI 為完成
+            document.getElementById(taskId).classList.add('completed');
+            
+            // 傳送資料到 Google Sheets
+            // 這裡抓取 localStorage 存的姓名
+            const name = localStorage.getItem('username') || "未知侠客";
+            const grade = localStorage.getItem('usergrade') || "未知系級";
+            
+            await fetch("你的_GAS_URL", {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({ name: name, grade: grade, task: taskId, action: "checkin" })
+            });
+            
+            alert("修為已提升！");
+        } else {
+            alert("金鑰錯誤，關主尚未認可。");
+        }
+    }
+</script>
+</body>
+</html>
