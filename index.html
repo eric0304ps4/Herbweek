@@ -118,20 +118,24 @@
 
         status.innerText = "資料傳送中...";
 
+        // ...前面的 fetch 代碼...
+
         try {
             const response = await fetch(GAS_URL, {
                 method: 'POST',
                 body: JSON.stringify({ name: name, score: parseInt(score) })
             });
             
-            status.innerHTML = "<span style='color:green'>報到成功！少俠請進。</span>";
-            // 延遲跳轉到排行榜頁面（如果有的話）
-            // window.location.href = "leaderboard.html";
+            status.innerHTML = "<span style='color:green'>報到成功！正在傳送至大殿...</span>";
+            
+            // 關鍵：等待 1.5 秒後跳轉，讓使用者看清楚成功訊息
+            setTimeout(() => {
+                window.location.href = "dashboard.html";
+            }, 1500);
+            
         } catch (error) {
-            status.innerHTML = "<span style='color:red'>傳輸中斷，請確認靈力連線。</span>";
-            console.error(error);
+            // ...錯誤處理...
         }
-    }
 </script>
 
 </body>
