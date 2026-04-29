@@ -134,11 +134,9 @@
                 <tr class="${i===0?'top1':''}">
                     <td>${i+1}</td>
                     <td>${p.name} <br><small>${p.grade}</small></td>
-                    <td>${p.score} 分</td>
-                    <td>${p.time} 秒</td>
-                    <td class="rank-value">${p.rankValue.toFixed(1)}</td>
+                    <td class="mobile-hide">${p.score} 分</td> <td class="mobile-hide">${p.time} 秒</td>   <td class="rank-value">${p.rankValue.toFixed(1)}</td>
                 </tr>
-            `).join('') || "<tr><td colspan='5'>尚未有紀錄</td></tr>";
+            `).join('');
         } catch(e) { console.error(e); }
     }
 
