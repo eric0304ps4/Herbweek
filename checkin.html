@@ -44,17 +44,62 @@
             font-size: 14px;
         }
         
+        .menu-toggle-btn {
+            width: 50px;
+            height: 50px;
+            background: #8b4513;
+            color: #f4e4bc;
+            border: 3px double #f4e4bc;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.3s;
+        }
+
+        .menu-toggle-btn:hover { transform: scale(1.1); }
+
+                /* 當選單被啟動時顯示 */
+        .menu-content.active {
+            display: block;
+        }
+
+                /* 動畫效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .top-nav-menu {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            text-align: right;
+        }
+        
+        /* 內部元件微調 */
         .challenger-info {
             font-weight: bold;
             color: #2d5a27;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             border-bottom: 1px dashed #8b4513;
             padding-bottom: 5px;
+            font-size: 14px;
         }
-        
+                
         .nav-buttons {
             display: flex;
-            gap: 8px;
+            flex-direction: column; /* 改為垂直排列更省空間 */
+            gap: 10px;
+        }
+
+        .nav-row {
+            display: flex;
+            gap: 5px;
             justify-content: flex-end;
         }
         
@@ -98,26 +143,44 @@
             background: #8b4513; /* 播放時變褐色 */
             box-shadow: 0 0 10px rgba(139, 69, 19, 0.5);
         }
-        
+
+        .menu-content {
+            display: none; /* 預設隱藏 */
+            background: rgba(244, 228, 188, 0.95);
+            border: 3px solid #8b4513;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            min-width: 180px;
+            animation: fadeIn 0.3s ease;
+        }
         
     </style>
 </head>
 <body>
 
-<div class="top-nav-bar">
-    <div class="challenger-info">
-        ⚔️ 當前挑戰者：<span id="display-username">讀取中...</span>
-    </div>
-    <div class="nav-buttons">
-        <a href="dashboard.html" class="nav-btn">🏰 大廳</a>
-        <a href="index.html" class="nav-btn" onclick="return confirm('確定要登出並回到首頁嗎？')">🚪 登出</a>
-    </div>
-    <div class="music-control">
-        <button id="music-btn" onclick="toggleMusic()">🎵 播放音樂</button>
-        <audio id="bg-music" loop>
-            <source src="bgm.mp3" type="audio/mpeg">
-            您的瀏覽器不支援音樂播放。
-        </audio>
+<div class="top-nav-menu">
+    <button class="menu-toggle-btn" onclick="toggleMenu()" id="main-menu-btn">📜</button>
+    
+    <div class="menu-content" id="nav-menu-content">
+        <div class="challenger-info">
+            ⚔️ <span id="display-username">讀取中...</span>
+        </div>
+        
+        <div class="nav-buttons">
+            <div class="music-control">
+                <button id="music-btn" onclick="toggleMusic()" style="width:100%; border:1px solid #8b4513; background:#2d5a27; color:#f4e4bc; padding:5px; border-radius:3px;">🎵 播放靈音</button>
+                <audio id="bg-music" loop>
+                    <source src="bgm.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+            
+            <div class="nav-row">
+                <a href="dashboard.html" class="nav-btn" style="flex:1; text-align:center;">🏰 大廳</a>
+                <a href="index.html" class="nav-btn" style="flex:1; text-align:center;" onclick="return confirm('確定登出？')">🚪 登出</a>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -295,6 +358,30 @@
                 btn.innerText = "🔇 靜音";
                 btn.classList.add('playing');
             }).catch(e => console.log("等待玩家互動後播放音樂"));
+        }
+    });
+
+    function toggleMenu() {
+        const menu = document.getElementById('nav-menu-content');
+        const btn = document.getElementById('main-menu-btn');
+        
+        menu.classList.toggle('active');
+        
+        // 變換按鈕圖示，開啟時變成「X」或「🗺️」
+        if (menu.classList.contains('active')) {
+            btn.innerText = "❌";
+        } else {
+            btn.innerText = "📜";
+        }
+    }
+    
+    // 點擊選單以外的地方自動關閉 (選配，增加使用者體驗)
+    window.addEventListener('click', function(e) {
+        const menu = document.getElementById('nav-menu-content');
+        const btn = document.getElementById('main-menu-btn');
+        if (!menu.contains(e.target) && !btn.contains(e.target)) {
+            menu.classList.remove('active');
+            btn.innerText = "📜";
         }
     });
 
