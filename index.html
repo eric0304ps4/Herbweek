@@ -5,16 +5,88 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2026中藥周 - 活動報到</title>
     <style>
-        body { background-color: #2c3e50; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: "Microsoft JhengHei", sans-serif; color: #4a3728; }
-        .scroll-container { background: #f4e4bc; border: 8px solid #8b4513; box-shadow: 0 0 20px rgba(0,0,0,0.5); padding: 30px; width: 320px; text-align: center; border-radius: 5px; }
-        h1 { color: #2d5a27; font-size: 24px; border-bottom: 2px solid #8b4513; padding-bottom: 10px; margin-top: 0; }
-        .input-group { margin: 20px 0; text-align: left; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
-        input { width: 100%; padding: 10px; border: 1px solid #8b4513; background: rgba(255, 255, 255, 0.5); box-sizing: border-box; font-size: 16px; border-radius: 3px; }
-        button { background: #8b4513; color: white; border: none; padding: 12px; font-size: 18px; cursor: pointer; transition: 0.3s; width: 100%; border-radius: 3px; font-weight: bold; }
-        button:hover { background: #2d5a27; transform: scale(1.02); }
-        #status { margin-top: 15px; font-size: 13px; min-height: 20px; }
-        small { color: #8b4513; font-size: 11px; display: block; margin-top: 5px; }
+        /* 整合後的視覺風格 */
+        body {
+            background-color: #2c3e50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: "Microsoft JhengHei", sans-serif;
+            color: #4a3728;
+        }
+
+        .scroll-container {
+            background: #f4e4bc; /* 羊皮紙色 */
+            border: 8px solid #8b4513;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            padding: 30px;
+            width: 320px;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        h1 {
+            color: #2d5a27; /* 墨草綠 */
+            font-size: 24px;
+            border-bottom: 2px solid #8b4513;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .input-group {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #8b4513;
+            background: rgba(255, 255, 255, 0.5);
+            box-sizing: border-box;
+            font-size: 16px;
+            border-radius: 3px;
+        }
+
+        button {
+            background: #8b4513;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #2d5a27;
+            transform: scale(1.02);
+        }
+
+        #status {
+            margin-top: 15px;
+            font-size: 13px;
+            min-height: 20px;
+        }
+
+        small {
+            color: #8b4513;
+            font-size: 11px;
+            display: block;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -40,13 +112,15 @@
     </div>    
 
     <button onclick="submitData()" id="submit-btn">準備好了，出發！</button>
+    
     <div id="status"></div>
 </div>
 
 <script>
+    // 請確認這是你最新部署的 GAS 網址
     const GAS_URL = "https://script.google.com/macros/s/AKfycbxP8aQXydPxrUvLQ-vz-0MepWDSGOPYT-ntabYPBJojtj2CqOc2pouvcIR5FJvqdc-e/exec";
 
-    // 1. 頁面載入自動跳轉
+    // 1. 頁面載入自動跳轉檢查
     window.onload = function() {
         if (localStorage.getItem('username') && localStorage.getItem('usergrade')) {
             window.location.href = "dashboard.html";
@@ -61,28 +135,28 @@
 
         if (name && grade) {
             try {
-                // 增加一個隨機參數防止快取
+                // 增加 t 參數防止瀏覽器快取舊資料
                 const res = await fetch(`${GAS_URL}?type=user&name=${encodeURIComponent(name)}&grade=${encodeURIComponent(grade)}&t=${Date.now()}`);
                 const result = await res.json();
                 
-                // 關鍵修正：後端如果回傳 error 代表沒這個人，要顯示 IG 欄位
+                // 如果後端回傳 error 代表沒資料 -> 顯示 IG 欄位
                 if (result.error === "not_found") {
                     igGroup.style.display = "block";
                 } else if (Array.isArray(result)) {
-                    // 如果回傳的是陣列，代表這個人已經在 Sheet 裡了，隱藏 IG 欄位
+                    // 如果回傳的是陣列，代表已註冊過 -> 隱藏 IG 欄位
                     igGroup.style.display = "none";
                 }
             } catch (e) {
-                console.log("新玩家或連線檢查中...");
+                console.log("正在檢查新玩家身分...");
             }
         }
     }
 
-    // 監聽輸入框，離開焦點時檢查
+    // 監聽輸入框，離開焦點時執行檢查
     document.getElementById('username').addEventListener('blur', checkUserStatus);
     document.getElementById('grade').addEventListener('blur', checkUserStatus);
 
-    // 3. 提交資料
+    // 3. 提交資料函數
     async function submitData() {
         const name = document.getElementById('username').value.trim();
         const grade = document.getElementById('grade').value.trim();
@@ -96,10 +170,9 @@
         }
 
         btn.disabled = true;
-        status.innerText = "⏳ 正在感應靈力，請稍候...";
+        status.innerText = "⏳ 正在感應靈力，開啟門戶...";
 
         try {
-            // POST 資料到 GAS
             await fetch(GAS_URL, {
                 method: 'POST',
                 mode: 'no-cors',
@@ -110,11 +183,11 @@
                 })
             });
 
-            // 存入本地瀏覽器
+            // 存入瀏覽器快取
             localStorage.setItem('username', name);
             localStorage.setItem('usergrade', grade);
             
-            status.innerHTML = "<span style='color:green'>🌿 歡迎來到百草谷！</span>";
+            status.innerHTML = "<span style='color:green'>🌿 歡迎來到百草谷！正在跳轉...</span>";
             setTimeout(() => { window.location.href = "dashboard.html"; }, 1200);
         } catch (error) {
             status.innerText = "❌ 傳輸失敗，請檢查網路連線。";
