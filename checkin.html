@@ -28,10 +28,72 @@
         .completed { background: #d4edda !important; border-left-color: #28a745 !important; }
         .completed .btn-verify { display: none; }
         .completed::after { content: "✓ 已認證"; color: #28a745; font-weight: bold; }
+
+                /* 固定在右上角的資訊與導航區 */
+        .top-nav-bar {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(244, 228, 188, 0.9); /* 羊皮紙半透明色 */
+            border: 2px solid #8b4513;
+            padding: 10px 15px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            z-index: 1000; /* 確保在最上層 */
+            text-align: right;
+            font-size: 14px;
+        }
+        
+        .challenger-info {
+            font-weight: bold;
+            color: #2d5a27;
+            margin-bottom: 8px;
+            border-bottom: 1px dashed #8b4513;
+            padding-bottom: 5px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+        
+        .nav-btn {
+            background: #8b4513;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 12px;
+            border-radius: 3px;
+        }
+        
+        .nav-btn:hover {
+            background: #2d5a27;
+        }
+        
+        /* 為了不讓內容被擋住，給 container 加一點上邊距 */
+        body {
+            padding-top: 80px; 
+        }
+
+        
     </style>
 </head>
 <body>
 
+<div class="top-nav-bar">
+    <div class="challenger-info">
+        ⚔️ 當前挑戰者：<span id="display-username">讀取中...</span>
+    </div>
+    <div class="nav-buttons">
+        <a href="dashboard.html" class="nav-btn">🏰 大廳</a>
+        <a href="index.html" class="nav-btn" onclick="return confirm('確定要登出並回到首頁嗎？')">🚪 登出</a>
+    </div>
+</div>
+    
+    
 <div class="container">
     <h2 style="text-align:center; color:#2d5a27;">📜 望聞問切：五日修煉</h2>
     
@@ -147,6 +209,18 @@
             alert("金鑰錯誤！");
         }
     }
+    // 頁面載入時執行
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedName = localStorage.getItem('username');
+        const displaySpan = document.getElementById('display-username');
+        
+        if (savedName) {
+            displaySpan.innerText = savedName;
+        } else {
+            displaySpan.innerText = "神祕俠客";
+        }
+    });
+
 </script>
 </body>
 </html>
