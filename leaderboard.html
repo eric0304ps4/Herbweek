@@ -5,12 +5,135 @@
     <title>藥材辨識榮譽殿堂</title>
     <style>
         /* 導航欄樣式 */
-        .top-nav-bar {
-            position: fixed; top: 10px; right: 10px;
-            background: rgba(244, 228, 188, 0.9); border: 2px solid #8b4513;
-            padding: 10px 15px; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            z-index: 1000; text-align: right; font-size: 14px;
+       .top-nav-bar {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(244, 228, 188, 0.9); /* 羊皮紙半透明色 */
+            border: 2px solid #8b4513;
+            padding: 10px 15px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            z-index: 1000; /* 確保在最上層 */
+            text-align: right;
+            font-size: 14px;
         }
+        
+        .menu-toggle-btn {
+            width: 50px;
+            height: 50px;
+            background: #8b4513;
+            color: #f4e4bc;
+            border: 3px double #f4e4bc;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.3s;
+        }
+
+        .menu-toggle-btn:hover { transform: scale(1.1); }
+
+                /* 當選單被啟動時顯示 */
+        .menu-content.active {
+            display: block;
+        }
+
+                /* 動畫效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .top-nav-menu {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            text-align: right;
+        }
+        
+        /* 內部元件微調 */
+        .challenger-info {
+            font-weight: bold;
+            color: #2d5a27;
+            margin-bottom: 10px;
+            border-bottom: 1px dashed #8b4513;
+            padding-bottom: 5px;
+            font-size: 14px;
+        }
+                
+        .nav-buttons {
+            display: flex;
+            flex-direction: column; /* 改為垂直排列更省空間 */
+            gap: 10px;
+        }
+
+        .nav-row {
+            display: flex;
+            gap: 5px;
+            justify-content: flex-end;
+        }
+        
+        .nav-btn {
+            background: #8b4513;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 12px;
+            border-radius: 3px;
+        }
+        
+        .nav-btn:hover {
+            background: #2d5a27;
+        }
+        
+        /* 為了不讓內容被擋住，給 container 加一點上邊距 */
+        body {
+            padding-top: 80px; 
+        }
+
+        .music-control {
+        margin-right: 10px; /* 放在導航按鈕左邊 */
+        display: inline-block;
+        }
+        
+        #music-btn {
+            background: #2d5a27; /* 墨綠色 */
+            color: #f4e4bc;
+            border: 1px solid #8b4513;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+            border-radius: 3px;
+            transition: 0.3s;
+        }
+        
+        #music-btn.playing {
+            background: #8b4513; /* 播放時變褐色 */
+            box-shadow: 0 0 10px rgba(139, 69, 19, 0.5);
+        }
+
+        .menu-content {
+            display: none; /* 預設隱藏 */
+            background: rgba(244, 228, 188, 0.95);
+            border: 3px solid #8b4513;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            min-width: 180px;
+            animation: fadeIn 0.3s ease;
+        }
+
+
+
+        
         .challenger-info { font-weight: bold; color: #2d5a27; margin-bottom: 8px; border-bottom: 1px dashed #8b4513; padding-bottom: 5px; }
         .nav-buttons { display: flex; gap: 8px; justify-content: flex-end; }
         .nav-btn { background: #8b4513; color: white; border: none; padding: 5px 10px; cursor: pointer; text-decoration: none; font-size: 12px; border-radius: 3px; }
@@ -30,11 +153,27 @@
 </head>
 <body>
 
-<div class="top-nav-bar">
-    <div class="challenger-info">⚔️ 當前挑戰者：<span id="display-username">讀取中...</span></div>
-    <div class="nav-buttons">
-        <a href="dashboard.html" class="nav-btn">🏰 大廳</a>
-        <a href="index.html" class="nav-btn" onclick="return confirm('確定要登出嗎？')">🚪 登出</a>
+<div class="top-nav-menu">
+    <button class="menu-toggle-btn" onclick="toggleMenu()" id="main-menu-btn">📜</button>
+    
+    <div class="menu-content" id="nav-menu-content">
+        <div class="challenger-info">
+            ⚔️當前挑戰者 <span id="display-username">讀取中...</span>
+        </div>
+        
+        <div class="nav-buttons">
+            <div class="music-control">
+                <button id="music-btn" onclick="toggleMusic()" style="width:100%; border:1px solid #8b4513; background:#2d5a27; color:#f4e4bc; padding:5px; border-radius:3px;">🎵 播放靈音</button>
+                <audio id="bg-music" loop>
+                    <source src="bgm.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+            
+            <div class="nav-row">
+                <a href="dashboard.html" class="nav-btn" style="flex:1; text-align:center;">🏰 大廳</a>
+                <a href="index.html" class="nav-btn" style="flex:1; text-align:center;" onclick="return confirm('確定登出？')">🚪 登出</a>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -143,6 +282,78 @@
     };
     
     setInterval(() => { loadCompetitionRank(); loadGeneralRank(); }, 60000);
+
+    function toggleMusic() {
+    const music = document.getElementById('bg-music');
+    const btn = document.getElementById('music-btn');
+
+    if (music.paused) {
+        music.play();
+        btn.innerText = "🔇 靜音";
+        btn.classList.add('playing');
+        localStorage.setItem('musicStatus', 'on');
+    } else {
+        music.pause();
+        btn.innerText = "🎵 播放音樂";
+        btn.classList.remove('playing');
+        localStorage.setItem('musicStatus', 'off');
+        }
+    }
+    
+    // 頁面載入時，檢查之前的音樂設定
+    // 統一處理頁面載入邏輯
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. 顯示玩家名稱
+        const savedName = localStorage.getItem('username');
+        const displaySpan = document.getElementById('display-username');
+        if (savedName) {
+            displaySpan.innerText = savedName;
+        } else {
+            displaySpan.innerText = "神祕俠客";
+        }
+    
+        // 2. 音樂初始狀態檢查
+        const music = document.getElementById('bg-music');
+        const btn = document.getElementById('music-btn');
+        const status = localStorage.getItem('musicStatus');
+        
+        // 設定初始音量，避免太吵
+        music.volume = 0.4;
+    
+        if (status === 'on') {
+            music.play().then(() => {
+                btn.innerText = "🔇 靜音";
+                btn.classList.add('playing');
+            }).catch(e => console.log("等待玩家互動後播放音樂"));
+        }
+    });
+
+    function toggleMenu() {
+        const menu = document.getElementById('nav-menu-content');
+        const btn = document.getElementById('main-menu-btn');
+        
+        menu.classList.toggle('active');
+        
+        // 變換按鈕圖示，開啟時變成「X」或「🗺️」
+        if (menu.classList.contains('active')) {
+            btn.innerText = "❌";
+        } else {
+            btn.innerText = "📜";
+        }
+    }
+    
+    // 點擊選單以外的地方自動關閉 (選配，增加使用者體驗)
+    window.addEventListener('click', function(e) {
+        const menu = document.getElementById('nav-menu-content');
+        const btn = document.getElementById('main-menu-btn');
+        if (!menu.contains(e.target) && !btn.contains(e.target)) {
+            menu.classList.remove('active');
+            btn.innerText = "📜";
+        }
+    });
+
+
+    
 </script>
 </body>
 </html>
