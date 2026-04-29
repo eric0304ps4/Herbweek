@@ -80,6 +80,8 @@
 </head>
 <body>
 
+
+
 <div class="scroll-container">
     <h1>2026中藥周</h1>
     <p>—— 活動報到處 ——</p>
@@ -93,6 +95,12 @@
         <label>輸入系級</label>
         <input type="text" id="grade" placeholder="中醫一">
     </div>
+
+    <div class="input-group" id="ig-group">
+        <label>Instagram 帳號 (抽獎用)</label>    
+        <input type="text" id="ig-account" placeholder="@eric0304ps4">
+        <small style="color: #8b4513; font-size: 11px;">* 僅限第一次登入需填寫</small>
+    </div>    
     
     <div class="input-group" style="display:none;"> <input type="number" id="score" value="0">
     </div>
@@ -104,61 +112,75 @@
 
 <script>
     // 你的 Google Apps Script 網址
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbw5QYBkPUOlNSEAvohC3LcBmJTTYwE-rD0WmZwRe2e-xOpZ-zsnhTNbbQ8UBrKngiK0/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbx4PnrcxAI8hk-P2Y17bwlb8U9mkQG89SkACqlKQlq_R_IWR7K-5D9S3GXiD_IGKBLv/exec";
+// 1. 自動檢查：如果已經登入過，直接送往大廳
+    window.onload = function() {
+        if (localStorage.getItem('username') && localStorage.getItem('usergrade')) {
+            window.location.href = "dashboard.html";
+        }
+    };
+
+    // 2. 動態檢查：當輸入完姓名與系級，檢查是否為老玩家
+    async function checkUserStatus() {
+        const name = document.getElementById('username').value;
+        const grade = document.getElementById('grade').value;
+        const igGroup = document.getElementById('ig-group');
+
+        if (name && grade) {
+            try {
+                // 利用原本 checkin.html 用的查詢 API
+                const res = await fetch(`${GAS_URL}?type=user&name=${encodeURIComponent(name)}&grade=${encodeURIComponent(grade)}`);
+                const completedTasks = await res.json();
+                
+                // 如果回傳的是陣列（代表使用者已存在），就隱藏 IG 欄位
+                if (Array.isArray(completedTasks) && completedTasks.length >= 0) {
+                    igGroup.style.display = "none";
+                } else {
+                    igGroup.style.display = "block";
+                }
+            } catch (e) {
+                console.log("新玩家或網路異常");
+            }
+        }
+    }
+
+    // 幫姓名和系級欄位加上「離開焦點時檢查」的事件
+    document.getElementById('username').addEventListener('blur', checkUserStatus);
+    document.getElementById('grade').addEventListener('blur', checkUserStatus);
 
     async function submitData() {
-        // 1. 抓取 HTML 元素
-        const nameInput = document.getElementById('username');
-        const gradeInput = document.getElementById('grade');
-        const scoreInput = document.getElementById('score');
+        const name = document.getElementById('username').value;
+        const grade = document.getElementById('grade').value;
+        const ig = document.getElementById('ig-account').value;
         const status = document.getElementById('status');
 
-        // 2. 取得數值
-        const name = nameInput.value;
-        const grade = gradeInput.value;
-        const score = scoreInput.value;
-
-        // 3. 檢查必填欄位
         if (!name || !grade) {
             alert("請先輸入姓名與系級！");
             return;
         }
 
-        status.innerText = "資料傳送中...";
+        status.innerText = "正在開啟百草谷大門...";
 
         try {
-            // 發送資料到 Google Sheets
-            // 注意：GAS POST 有時會遇到 CORS 問題，通常我們會加 mode: 'no-cors'
             await fetch(GAS_URL, {
                 method: 'POST',
-                mode: 'no-cors', // 加入這行可以避免部分瀏覽器的跨網域錯誤
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                mode: 'no-cors',
                 body: JSON.stringify({
                     name: name,
-                    grade: grade, // 記得把系級也傳過去
-                    score: parseInt(score)
+                    grade: grade,
+                    ig: ig // 傳送 IG 帳號
                 })
             });
 
-                // --- 在這裡加入 LocalStorage 存檔 ---
-            localStorage.setItem('username', name);  // 儲存姓名
-            localStorage.setItem('usergrade', grade); // 儲存系級
-    // ---------
+            localStorage.setItem('username', name);
+            localStorage.setItem('usergrade', grade);
             
-            // 只要沒噴錯，就顯示成功並跳轉
-            status.innerHTML = "<span style='color:green'>報到成功！正在傳送至大廳...</span>";
-            
-            setTimeout(() => {
-                window.location.href = "dashboard.html";
-            }, 1500);
-            
+            status.innerHTML = "<span style='color:green'>歡迎回來，正在進入大廳...</span>";
+            setTimeout(() => { window.location.href = "dashboard.html"; }, 1500);
         } catch (error) {
-            status.innerHTML = "<span style='color:red'>傳輸失敗，請檢查網路連線。</span>";
-            console.error("Error:", error);
+            status.innerText = "傳輸失敗，請檢查網路。";
         }
-    } // 這裡補上 submitData 的結尾括號
+    }
 </script>
 
 </body>
