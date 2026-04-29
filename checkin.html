@@ -1,194 +1,59 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>望聞問切 - 修煉之路</title>
     <style>
-        body { background-color: #2c3e50; font-family: "Microsoft JhengHei", sans-serif; color: #4a3728; padding: 20px; }
-        .container { background: #f4e4bc; border: 5px solid #8b4513; max-width: 500px; margin: auto; padding: 20px; border-radius: 10px; }
-        .day-tabs { display: flex; justify-content: space-around; margin-bottom: 20px; border-bottom: 2px solid #8b4513; padding-bottom: 10px; }
-        .day-tab { cursor: pointer; padding: 5px 10px; font-weight: bold; border: 1px solid transparent; }
-        .day-tab.active { border: 1px solid #8b4513; background: #8b4513; color: white; border-radius: 5px; }
+        body { background-color: #2c3e50; font-family: "Microsoft JhengHei", sans-serif; color: #4a3728; padding: 20px; padding-top: 100px; margin: 0; }
+        .container { background: #f4e4bc; border: 5px solid #8b4513; max-width: 500px; margin: auto; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         
+        /* 捲軸導航選單樣式 */
+        .top-nav-menu { position: fixed; top: 15px; right: 15px; z-index: 1000; text-align: right; }
+        .menu-toggle-btn { width: 50px; height: 50px; background: #8b4513; color: #f4e4bc; border: 3px double #f4e4bc; border-radius: 50%; font-size: 24px; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: 0.3s; }
+        .menu-toggle-btn:hover { transform: scale(1.1); }
+        .menu-content { display: none; background: rgba(244, 228, 188, 0.95); border: 3px solid #8b4513; padding: 15px; margin-top: 10px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); min-width: 180px; animation: fadeIn 0.3s ease; }
+        .menu-content.active { display: block; }
+        
+        .challenger-info { font-weight: bold; color: #2d5a27; margin-bottom: 10px; border-bottom: 1px dashed #8b4513; padding-bottom: 5px; font-size: 14px; }
+        .nav-buttons { display: flex; flex-direction: column; gap: 8px; }
+        .nav-btn { background: #8b4513; color: white; border: none; padding: 8px; cursor: pointer; text-decoration: none; font-size: 12px; border-radius: 3px; text-align: center; }
+        
+        /* 任務列表與標籤 */
+        .day-tabs { display: flex; justify-content: space-around; margin-bottom: 20px; border-bottom: 2px solid #8b4513; padding-bottom: 10px; overflow-x: auto; }
+        .day-tab { cursor: pointer; padding: 5px 10px; font-weight: bold; white-space: nowrap; }
+        .day-tab.active { background: #8b4513; color: white; border-radius: 5px; }
         .task-list { display: none; }
         .task-list.active { display: block; }
-        
-        .task-item { 
-            background: rgba(139, 69, 19, 0.1); 
-            margin: 10px 0; 
-            padding: 15px; 
-            border-left: 5px solid #8b4513;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
+        .task-item { background: rgba(139, 69, 19, 0.1); margin: 10px 0; padding: 15px; border-left: 5px solid #8b4513; display: flex; justify-content: space-between; align-items: center; }
         .btn-verify { background: #2d5a27; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 3px; }
+        
+        /* 認證成功樣式 */
         .completed { background: #d4edda !important; border-left-color: #28a745 !important; }
         .completed .btn-verify { display: none; }
         .completed::after { content: "✓ 已認證"; color: #28a745; font-weight: bold; }
 
-                /* 固定在右上角的資訊與導航區 */
-        .top-nav-bar {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: rgba(244, 228, 188, 0.9); /* 羊皮紙半透明色 */
-            border: 2px solid #8b4513;
-            padding: 10px 15px;
-            border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            z-index: 1000; /* 確保在最上層 */
-            text-align: right;
-            font-size: 14px;
-        }
-        
-        .menu-toggle-btn {
-            width: 50px;
-            height: 50px;
-            background: #8b4513;
-            color: #f4e4bc;
-            border: 3px double #f4e4bc;
-            border-radius: 50%;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: 0.3s;
-        }
-
-        .menu-toggle-btn:hover { transform: scale(1.1); }
-
-                /* 當選單被啟動時顯示 */
-        .menu-content.active {
-            display: block;
-        }
-
-                /* 動畫效果 */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .top-nav-menu {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            text-align: right;
-        }
-        
-        /* 內部元件微調 */
-        .challenger-info {
-            font-weight: bold;
-            color: #2d5a27;
-            margin-bottom: 10px;
-            border-bottom: 1px dashed #8b4513;
-            padding-bottom: 5px;
-            font-size: 14px;
-        }
-                
-        .nav-buttons {
-            display: flex;
-            flex-direction: column; /* 改為垂直排列更省空間 */
-            gap: 10px;
-        }
-
-        .nav-row {
-            display: flex;
-            gap: 5px;
-            justify-content: flex-end;
-        }
-        
-        .nav-btn {
-            background: #8b4513;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 12px;
-            border-radius: 3px;
-        }
-        
-        .nav-btn:hover {
-            background: #2d5a27;
-        }
-        
-        /* 為了不讓內容被擋住，給 container 加一點上邊距 */
-        body {
-            padding-top: 80px; 
-        }
-
-        .music-control {
-        margin-right: 10px; /* 放在導航按鈕左邊 */
-        display: inline-block;
-        }
-        
-        #music-btn {
-            background: #2d5a27; /* 墨綠色 */
-            color: #f4e4bc;
-            border: 1px solid #8b4513;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-size: 12px;
-            border-radius: 3px;
-            transition: 0.3s;
-        }
-        
-        #music-btn.playing {
-            background: #8b4513; /* 播放時變褐色 */
-            box-shadow: 0 0 10px rgba(139, 69, 19, 0.5);
-        }
-
-        .menu-content {
-            display: none; /* 預設隱藏 */
-            background: rgba(244, 228, 188, 0.95);
-            border: 3px solid #8b4513;
-            padding: 15px;
-            margin-top: 10px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            min-width: 180px;
-            animation: fadeIn 0.3s ease;
-        }
-        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
 <div class="top-nav-menu">
     <button class="menu-toggle-btn" onclick="toggleMenu()" id="main-menu-btn">📜</button>
-    
     <div class="menu-content" id="nav-menu-content">
-        <div class="challenger-info">
-            ⚔️當前挑戰者 <span id="display-username">讀取中...</span>
-        </div>
-        
+        <div class="challenger-info">⚔️ 當前挑戰者 <span id="display-username">讀取中...</span></div>
         <div class="nav-buttons">
-            <div class="music-control">
-                <button id="music-btn" onclick="toggleMusic()" style="width:100%; border:1px solid #8b4513; background:#2d5a27; color:#f4e4bc; padding:5px; border-radius:3px;">🎵 播放靈音</button>
-                <audio id="bg-music" loop>
-                    <source src="bgm.mp3" type="audio/mpeg">
-                </audio>
-            </div>
-            
-            <div class="nav-row">
-                <a href="dashboard.html" class="nav-btn" style="flex:1; text-align:center;">🏰 大廳</a>
-                <a href="index.html" class="nav-btn" style="flex:1; text-align:center;" onclick="return confirm('確定登出？')">🚪 登出</a>
-            </div>
+            <button id="music-btn" onclick="toggleMusic()" style="width:100%; background:#2d5a27; color:white; border:none; padding:8px; border-radius:3px;">🎵 播放音樂</button>
+            <audio id="bg-music" loop><source src="bgm.mp3" type="audio/mpeg"></audio>
+            <a href="dashboard.html" class="nav-btn">🏰 大廳</a>
+            <a href="index.html" class="nav-btn" onclick="localStorage.clear()">🚪 登出</a>
         </div>
     </div>
 </div>
 
-
-    
 <div class="container">
     <h2 style="text-align:center; color:#2d5a27;">📜 望聞問切：五日修煉</h2>
-    
     <div class="day-tabs">
         <div class="day-tab active" id="tab1" onclick="showDay(1)">第一日</div>
         <div class="day-tab" id="tab2" onclick="showDay(2)">第二日</div>
@@ -202,49 +67,21 @@
         <div class="task-item" id="D1-2"> <span>貳、聞</span> <button class="btn-verify" onclick="verifyTask('D1-2')">關主認證</button> </div>
         <div class="task-item" id="D1-3"> <span>參、問</span> <button class="btn-verify" onclick="verifyTask('D1-3')">關主認證</button> </div>
         <div class="task-item" id="D1-4"> <span>肆、切</span> <button class="btn-verify" onclick="verifyTask('D1-4')">關主認證</button> </div>
-        <div class="task-item" id="D1-5"> <span>伍、抓藥挑戰</span> <button class="btn-verify" onclick="verifyTask('D1-5')">關主認證</button> </div>
+        <div class="task-item" id="D1-5"> <span>伍、挑戰</span> <button class="btn-verify" onclick="verifyTask('D1-5')">關主認證</button> </div>
     </div>
-
-    <div id="day2" class="task-list">
-        <div class="task-item" id="D2-1"> <span>壹、望</span> <button class="btn-verify" onclick="verifyTask('D2-1')">關主認證</button> </div>
-        <div class="task-item" id="D2-2"> <span>貳、聞</span> <button class="btn-verify" onclick="verifyTask('D2-2')">關主認證</button> </div>
-        <div class="task-item" id="D2-3"> <span>參、問</span> <button class="btn-verify" onclick="verifyTask('D2-3')">關主認證</button> </div>
-        <div class="task-item" id="D2-4"> <span>肆、切</span> <button class="btn-verify" onclick="verifyTask('D2-4')">關主認證</button> </div>
-        <div class="task-item" id="D2-5"> <span>伍、抓藥挑戰</span> <button class="btn-verify" onclick="verifyTask('D2-5')">關主認證</button> </div>
     </div>
-
-    <div id="day3" class="task-list">
-        <div class="task-item" id="D3-1"> <span>壹、望</span> <button class="btn-verify" onclick="verifyTask('D3-1')">關主認證</button> </div>
-        <div class="task-item" id="D3-2"> <span>貳、聞</span> <button class="btn-verify" onclick="verifyTask('D3-2')">關主認證</button> </div>
-        <div class="task-item" id="D3-3"> <span>參、問</span> <button class="btn-verify" onclick="verifyTask('D3-3')">關主認證</button> </div>
-        <div class="task-item" id="D3-4"> <span>肆、切</span> <button class="btn-verify" onclick="verifyTask('D3-4')">關主認證</button> </div>
-        <div class="task-item" id="D3-5"> <span>伍、抓藥挑戰</span> <button class="btn-verify" onclick="verifyTask('D3-5')">關主認證</button> </div>
-    </div>
-
-    <div id="day4" class="task-list">
-        <div class="task-item" id="D4-1"> <span>壹、望</span> <button class="btn-verify" onclick="verifyTask('D4-1')">關主認證</button> </div>
-        <div class="task-item" id="D4-2"> <span>貳、聞</span> <button class="btn-verify" onclick="verifyTask('D4-2')">關主認證</button> </div>
-        <div class="task-item" id="D4-3"> <span>參、問</span> <button class="btn-verify" onclick="verifyTask('D4-3')">關主認證</button> </div>
-        <div class="task-item" id="D4-4"> <span>肆、切</span> <button class="btn-verify" onclick="verifyTask('D4-4')">關主認證</button> </div>
-        <div class="task-item" id="D4-5"> <span>伍、抓藥挑戰</span> <button class="btn-verify" onclick="verifyTask('D4-5')">關主認證</button> </div>
-    </div>
-
-    <div id="day5" class="task-list">
-        <div class="task-item" id="D5-1"> <span>壹、望</span> <button class="btn-verify" onclick="verifyTask('D5-1')">關主認證</button> </div>
-        <div class="task-item" id="D5-2"> <span>貳、聞</span> <button class="btn-verify" onclick="verifyTask('D5-2')">關主認證</button> </div>
-        <div class="task-item" id="D5-3"> <span>參、問</span> <button class="btn-verify" onclick="verifyTask('D5-3')">關主認證</button> </div>
-        <div class="task-item" id="D5-4"> <span>肆、切</span> <button class="btn-verify" onclick="verifyTask('D5-4')">關主認證</button> </div>
-        <div class="task-item" id="D5-5"> <span>伍、抓藥挑戰</span> <button class="btn-verify" onclick="verifyTask('D5-5')">關主認證</button> </div>
-    </div>
-</div>
 
 <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbx4PnrcxAI8hk-P2Y17bwlb8U9mkQG89SkACqlKQlq_R_IWR7K-5D9S3GXiD_IGKBLv/exec";
     const MASTER_KEY = "CMU2026"; 
 
+    // --- 初始化邏輯 ---
     window.onload = async function() {
         const savedName = localStorage.getItem('username');
         const savedGrade = localStorage.getItem('usergrade');
+
+        // 1. 設定挑戰者名稱
+        document.getElementById('display-username').innerText = savedName || "神祕俠客";
 
         if (!savedName) {
             alert("找不到報到資料，請重新報到！");
@@ -252,140 +89,101 @@
             return;
         }
 
+        // 2. 載入簽到進度
         try {
             const response = await fetch(`${GAS_URL}?type=user&name=${encodeURIComponent(savedName)}&grade=${encodeURIComponent(savedGrade)}`);
             const completedTasks = await response.json();
-
             completedTasks.forEach(taskId => {
                 const el = document.getElementById(taskId);
                 if (el) el.classList.add('completed');
             });
-        } catch (e) {
-            console.error("同步失敗:", e);
+        } catch (e) { console.error("同步失敗:", e); }
+
+        // 3. 音樂初始化
+        const music = document.getElementById('bg-music');
+        const mBtn = document.getElementById('music-btn');
+        music.volume = 0.4;
+        if (localStorage.getItem('musicStatus') === 'on') {
+            music.play().then(() => {
+                mBtn.innerText = "🔇 靜音";
+                mBtn.classList.add('playing');
+            }).catch(e => console.log("等待手動播放"));
         }
+
+        // 4. 啟動公告檢查
+        checkWorldAnnouncement();
+        setInterval(checkWorldAnnouncement, 30000);
     };
 
+    // --- 功能函數 ---
     function showDay(d) {
         document.querySelectorAll('.task-list').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.day-tab').forEach(el => el.classList.remove('active'));
-        
         document.getElementById('day' + d).classList.add('active');
         document.getElementById('tab' + d).classList.add('active');
     }
 
     async function verifyTask(taskId) {
         const key = prompt("請關主輸入認證金鑰：");
-        
         if (key === MASTER_KEY) {
-            const savedName = localStorage.getItem('username');
-            const savedGrade = localStorage.getItem('usergrade');
-            
-            // 先在 UI 上標記完成
             document.getElementById(taskId).classList.add('completed');
-            
             try {
                 await fetch(GAS_URL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    body: JSON.stringify({ 
-                        name: savedName, 
-                        grade: savedGrade, 
-                        task: taskId 
-                    })
+                    body: JSON.stringify({ name: localStorage.getItem('username'), grade: localStorage.getItem('usergrade'), task: taskId })
                 });
-                alert(`${savedName} 同學，此關修為已錄入！`);
-            } catch (e) {
-                alert("資料上傳失敗，請檢查網路。");
-            }
-        } else {
-            alert("金鑰錯誤！");
-        }
+            } catch (e) { alert("上傳失敗，請檢查網路。"); }
+        } else { alert("金鑰錯誤！"); }
     }
-    // 頁面載入時執行
-    document.addEventListener('DOMContentLoaded', function() {
-        const savedName = localStorage.getItem('username');
-        const displaySpan = document.getElementById('display-username');
-        
-        if (savedName) {
-            displaySpan.innerText = savedName;
-        } else {
-            displaySpan.innerText = "神祕俠客";
-        }
-    });
-
-
-
-
-    function toggleMusic() {
-    const music = document.getElementById('bg-music');
-    const btn = document.getElementById('music-btn');
-
-    if (music.paused) {
-        music.play();
-        btn.innerText = "🔇 靜音";
-        btn.classList.add('playing');
-        localStorage.setItem('musicStatus', 'on');
-    } else {
-        music.pause();
-        btn.innerText = "🎵 播放音樂";
-        btn.classList.remove('playing');
-        localStorage.setItem('musicStatus', 'off');
-        }
-    }
-    
-    // 頁面載入時，檢查之前的音樂設定
-    // 統一處理頁面載入邏輯
-    document.addEventListener('DOMContentLoaded', function() {
-        // 1. 顯示玩家名稱
-        const savedName = localStorage.getItem('username');
-        const displaySpan = document.getElementById('display-username');
-        if (savedName) {
-            displaySpan.innerText = savedName;
-        } else {
-            displaySpan.innerText = "神祕俠客";
-        }
-    
-        // 2. 音樂初始狀態檢查
-        const music = document.getElementById('bg-music');
-        const btn = document.getElementById('music-btn');
-        const status = localStorage.getItem('musicStatus');
-        
-        // 設定初始音量，避免太吵
-        music.volume = 0.4;
-    
-        if (status === 'on') {
-            music.play().then(() => {
-                btn.innerText = "🔇 靜音";
-                btn.classList.add('playing');
-            }).catch(e => console.log("等待玩家互動後播放音樂"));
-        }
-    });
 
     function toggleMenu() {
-        const menu = document.getElementById('nav-menu-content');
-        const btn = document.getElementById('main-menu-btn');
-        
-        menu.classList.toggle('active');
-        
-        // 變換按鈕圖示，開啟時變成「X」或「🗺️」
-        if (menu.classList.contains('active')) {
-            btn.innerText = "❌";
+        const content = document.getElementById('nav-menu-content');
+        content.classList.toggle('active');
+        document.getElementById('main-menu-btn').innerText = content.classList.contains('active') ? "❌" : "📜";
+    }
+
+    function toggleMusic() {
+        const m = document.getElementById('bg-music');
+        const b = document.getElementById('music-btn');
+        if (m.paused) {
+            m.play(); b.innerText = "🔇 靜音"; localStorage.setItem('musicStatus', 'on');
         } else {
-            btn.innerText = "📜";
+            m.pause(); b.innerText = "🎵 播放音樂"; localStorage.setItem('musicStatus', 'off');
         }
     }
-    
-    // 點擊選單以外的地方自動關閉 (選配，增加使用者體驗)
-    window.addEventListener('click', function(e) {
+
+    // --- 全服公告邏輯 ---
+    let lastKingName = null;
+    async function checkWorldAnnouncement() {
+        try {
+            const res = await fetch(`${GAS_URL}?type=competition_rank&t=${Date.now()}`);
+            const data = await res.json();
+            if (data.length > 0) {
+                const currentKing = data[0];
+                if (lastKingName && currentKing.name !== lastKingName) {
+                    Swal.fire({
+                        title: '🎊 全服公告：新任藥王誕生！',
+                        text: `恭喜 ${currentKing.name} 拔得頭籌！`,
+                        icon: 'success',
+                        background: '#f4e4bc',
+                        confirmButtonColor: '#8b4513'
+                    });
+                }
+                lastKingName = currentKing.name;
+            }
+        } catch (e) {}
+    }
+
+    // 點擊外部關閉選單
+    window.onclick = function(e) {
         const menu = document.getElementById('nav-menu-content');
         const btn = document.getElementById('main-menu-btn');
         if (!menu.contains(e.target) && !btn.contains(e.target)) {
             menu.classList.remove('active');
             btn.innerText = "📜";
         }
-    });
-
-    
+    }
 </script>
 </body>
 </html>
