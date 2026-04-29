@@ -78,6 +78,27 @@
             padding-top: 80px; 
         }
 
+        .music-control {
+        margin-right: 10px; /* 放在導航按鈕左邊 */
+        display: inline-block;
+        }
+        
+        #music-btn {
+            background: #2d5a27; /* 墨綠色 */
+            color: #f4e4bc;
+            border: 1px solid #8b4513;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+            border-radius: 3px;
+            transition: 0.3s;
+        }
+        
+        #music-btn.playing {
+            background: #8b4513; /* 播放時變褐色 */
+            box-shadow: 0 0 10px rgba(139, 69, 19, 0.5);
+        }
+        
         
     </style>
 </head>
@@ -91,8 +112,16 @@
         <a href="dashboard.html" class="nav-btn">🏰 大廳</a>
         <a href="index.html" class="nav-btn" onclick="return confirm('確定要登出並回到首頁嗎？')">🚪 登出</a>
     </div>
+    <div class="music-control">
+        <button id="music-btn" onclick="toggleMusic()">🎵 播放音樂</button>
+        <audio id="bg-music" loop>
+            <source src="bgm.mp3" type="audio/mpeg">
+            您的瀏覽器不支援音樂播放。
+        </audio>
+    </div>
 </div>
-    
+
+
     
 <div class="container">
     <h2 style="text-align:center; color:#2d5a27;">📜 望聞問切：五日修煉</h2>
@@ -221,6 +250,55 @@
         }
     });
 
+
+
+
+    function toggleMusic() {
+    const music = document.getElementById('bg-music');
+    const btn = document.getElementById('music-btn');
+
+    if (music.paused) {
+        music.play();
+        btn.innerText = "🔇 靜音";
+        btn.classList.add('playing');
+        localStorage.setItem('musicStatus', 'on');
+    } else {
+        music.pause();
+        btn.innerText = "🎵 播放音樂";
+        btn.classList.remove('playing');
+        localStorage.setItem('musicStatus', 'off');
+        }
+    }
+    
+    // 頁面載入時，檢查之前的音樂設定
+    // 統一處理頁面載入邏輯
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. 顯示玩家名稱
+        const savedName = localStorage.getItem('username');
+        const displaySpan = document.getElementById('display-username');
+        if (savedName) {
+            displaySpan.innerText = savedName;
+        } else {
+            displaySpan.innerText = "神祕俠客";
+        }
+    
+        // 2. 音樂初始狀態檢查
+        const music = document.getElementById('bg-music');
+        const btn = document.getElementById('music-btn');
+        const status = localStorage.getItem('musicStatus');
+        
+        // 設定初始音量，避免太吵
+        music.volume = 0.4;
+    
+        if (status === 'on') {
+            music.play().then(() => {
+                btn.innerText = "🔇 靜音";
+                btn.classList.add('playing');
+            }).catch(e => console.log("等待玩家互動後播放音樂"));
+        }
+    });
+
+    
 </script>
 </body>
 </html>
