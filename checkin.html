@@ -25,14 +25,13 @@
         }
         
         .btn-verify { background: #2d5a27; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 3px; }
-        .completed { background: #d4edda; border-left-color: #28a745; }
+        .completed { background: #d4edda !important; border-left-color: #28a745 !important; }
         .completed .btn-verify { display: none; }
         .completed::after { content: "✓ 已認證"; color: #28a745; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="container">
 <div class="container">
     <h2 style="text-align:center; color:#2d5a27;">📜 望聞問切：五日修煉</h2>
     
@@ -52,45 +51,43 @@
         <div class="task-item" id="D1-5"> <span>伍、抓藥挑戰</span> <button class="btn-verify" onclick="verifyTask('D1-5')">關主認證</button> </div>
     </div>
 
-    <div id="day2" class="task-list active">
-        <div class="task-item" id="D2-1"> <span>壹、望</span> <button class="btn-verify" onclick="verifyTask('D1-1')">關主認證</button> </div>
-        <div class="task-item" id="D2-2"> <span>貳、聞</span> <button class="btn-verify" onclick="verifyTask('D1-2')">關主認證</button> </div>
-        <div class="task-item" id="D2-3"> <span>參、問</span> <button class="btn-verify" onclick="verifyTask('D1-3')">關主認證</button> </div>
-        <div class="task-item" id="D2-4"> <span>肆、切</span> <button class="btn-verify" onclick="verifyTask('D1-4')">關主認證</button> </div>
-        <div class="task-item" id="D2-5"> <span>伍、抓藥挑戰</span> <button class="btn-verify" onclick="verifyTask('D1-5')">關主認證</button> </div>
+    <div id="day2" class="task-list">
+        <div class="task-item" id="D2-1"> <span>壹、望</span> <button class="btn-verify" onclick="verifyTask('D2-1')">關主認證</button> </div>
+        <div class="task-item" id="D2-2"> <span>貳、聞</span> <button class="btn-verify" onclick="verifyTask('D2-2')">關主認證</button> </div>
+        <div class="task-item" id="D2-3"> <span>參、問</span> <button class="btn-verify" onclick="verifyTask('D2-3')">關主認證</button> </div>
+        <div class="task-item" id="D2-4"> <span>肆、切</span> <button class="btn-verify" onclick="verifyTask('D2-4')">關主認證</button> </div>
+        <div class="task-item" id="D2-5"> <span>伍、抓藥挑戰</span> <button class="btn-verify" onclick="verifyTask('D2-5')">關主認證</button> </div>
     </div>
 
-    <div id="day2" class="task-list active">
-        <div class="task-item" id="D3-1"> <span>壹、望</span> <button class="btn-verify" onclick="verifyTask('D1-1')">關主認證</button> </div>
-        <div class="task-item" id="D3-2"> <span>貳、聞</span> <button class="btn-verify" onclick="verifyTask('D1-2')">關主認證</button> </div>
-        <div class="task-item" id="D3-3"> <span>參、問</span> <button class="btn-verify" onclick="verifyTask('D1-3')">關主認證</button> </div>
-        <div class="task-item" id="D3-4"> <span>肆、切</span> <button class="btn-verify" onclick="verifyTask('D1-4')">關主認證</button> </div>
-        <div class="task-item" id="D3-5"> <span>伍、抓藥挑戰</span> <button class="btn-verify" onclick="verifyTask('D1-5')">關主認證</button> </div>
+    <div id="day3" class="task-list">
+        <div class="task-item" id="D3-1"> <span>壹、望</span> <button class="btn-verify" onclick="verifyTask('D3-1')">關主認證</button> </div>
+        <div class="task-item" id="D3-2"> <span>貳、聞</span> <button class="btn-verify" onclick="verifyTask('D3-2')">關主認證</button> </div>
+        <div class="task-item" id="D3-3"> <span>參、問</span> <button class="btn-verify" onclick="verifyTask('D3-3')">關主認證</button> </div>
+        <div class="task-item" id="D3-4"> <span>肆、切</span> <button class="btn-verify" onclick="verifyTask('D3-4')">關主認證</button> </div>
+        <div class="task-item" id="D3-5"> <span>伍、抓藥挑戰</span> <button class="btn-verify" onclick="verifyTask('D3-5')">關主認證</button> </div>
     </div>
 
-    <div id="day2" class="task-list active">
-        <div class="task-item" id="D4-1"> <span>壹、望</span> <button class="btn-verify" onclick="verifyTask('D1-1')">關主認證</button> </div>
-        <div class="task-item" id="D4-2"> <span>貳、聞</span> <button class="btn-verify" onclick="verifyTask('D1-2')">關主認證</button> </div>
-        <div class="task-item" id="D4-3"> <span>參、問</span> <button class="btn-verify" onclick="verifyTask('D1-3')">關主認證</button> </div>
-        <div class="task-item" id="D4-4"> <span>肆、切</span> <button class="btn-verify" onclick="verifyTask('D1-4')">關主認證</button> </div>
-        <div class="task-item" id="D4-5"> <span>伍、抓藥挑戰</span> <button class="btn-verify" onclick="verifyTask('D1-5')">關主認證</button> </div>
+    <div id="day4" class="task-list">
+        <div class="task-item" id="D4-1"> <span>壹、望</span> <button class="btn-verify" onclick="verifyTask('D4-1')">關主認證</button> </div>
+        <div class="task-item" id="D4-2"> <span>貳、聞</span> <button class="btn-verify" onclick="verifyTask('D4-2')">關主認證</button> </div>
+        <div class="task-item" id="D4-3"> <span>參、問</span> <button class="btn-verify" onclick="verifyTask('D4-3')">關主認證</button> </div>
+        <div class="task-item" id="D4-4"> <span>肆、切</span> <button class="btn-verify" onclick="verifyTask('D4-4')">關主認證</button> </div>
+        <div class="task-item" id="D4-5"> <span>伍、抓藥挑戰</span> <button class="btn-verify" onclick="verifyTask('D4-5')">關主認證</button> </div>
     </div>
 
-    <div id="day2" class="task-list active">
-        <div class="task-item" id="D5-1"> <span>壹、望</span> <button class="btn-verify" onclick="verifyTask('D1-1')">關主認證</button> </div>
-        <div class="task-item" id="D5-2"> <span>貳、聞</span> <button class="btn-verify" onclick="verifyTask('D1-2')">關主認證</button> </div>
-        <div class="task-item" id="D5-3"> <span>參、問</span> <button class="btn-verify" onclick="verifyTask('D1-3')">關主認證</button> </div>
-        <div class="task-item" id="D5-4"> <span>肆、切</span> <button class="btn-verify" onclick="verifyTask('D1-4')">關主認證</button> </div>
-        <div class="task-item" id="D5-5"> <span>伍、抓藥挑戰</span> <button class="btn-verify" onclick="verifyTask('D1-5')">關主認證</button> </div>
+    <div id="day5" class="task-list">
+        <div class="task-item" id="D5-1"> <span>壹、望</span> <button class="btn-verify" onclick="verifyTask('D5-1')">關主認證</button> </div>
+        <div class="task-item" id="D5-2"> <span>貳、聞</span> <button class="btn-verify" onclick="verifyTask('D5-2')">關主認證</button> </div>
+        <div class="task-item" id="D5-3"> <span>參、問</span> <button class="btn-verify" onclick="verifyTask('D5-3')">關主認證</button> </div>
+        <div class="task-item" id="D5-4"> <span>肆、切</span> <button class="btn-verify" onclick="verifyTask('D5-4')">關主認證</button> </div>
+        <div class="task-item" id="D5-5"> <span>伍、抓藥挑戰</span> <button class="btn-verify" onclick="verifyTask('D5-5')">關主認證</button> </div>
     </div>
 </div>
 
 <script>
-    // 1. 必須定義 GAS_URL
     const GAS_URL = "https://script.google.com/macros/s/AKfycbyY3ScAVhA57OcmUW4QFHmJ2Ofd5MJr06legZXizVtpQwyKZgM5CzYeQS7bNQvmcXB5/exec";
     const MASTER_KEY = "CMU2026"; 
 
-    // 2. 頁面載入時同步雲端進度
     window.onload = async function() {
         const savedName = localStorage.getItem('username');
         const savedGrade = localStorage.getItem('usergrade');
@@ -102,7 +99,6 @@
         }
 
         try {
-            // 向 GAS 請求進度 (需搭配我上一則訊息給你的新版 GAS doGet)
             const response = await fetch(`${GAS_URL}?type=user&name=${encodeURIComponent(savedName)}&grade=${encodeURIComponent(savedGrade)}`);
             const completedTasks = await response.json();
 
@@ -115,7 +111,6 @@
         }
     };
 
-    // 3. 切換天數邏輯
     function showDay(d) {
         document.querySelectorAll('.task-list').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.day-tab').forEach(el => el.classList.remove('active'));
@@ -124,21 +119,14 @@
         document.getElementById('tab' + d).classList.add('active');
     }
 
-    // 4. 認證邏輯
     async function verifyTask(taskId) {
         const key = prompt("請關主輸入認證金鑰：");
         
         if (key === MASTER_KEY) {
             const savedName = localStorage.getItem('username');
             const savedGrade = localStorage.getItem('usergrade');
-    
-            if (!savedName) {
-                alert("找不到你的報到資料，請先回首頁報到！");
-                window.location.href = "index.html";
-                return;
-            }
-    
-            // 立即改變 UI
+            
+            // 先在 UI 上標記完成
             document.getElementById(taskId).classList.add('completed');
             
             try {
@@ -153,10 +141,10 @@
                 });
                 alert(`${savedName} 同學，此關修為已錄入！`);
             } catch (e) {
-                alert("網路不穩，資料可能未成功上傳，請通知管理員。");
+                alert("資料上傳失敗，請檢查網路。");
             }
         } else {
-            alert("金鑰錯誤，關主尚未認可。");
+            alert("金鑰錯誤！");
         }
     }
 </script>
