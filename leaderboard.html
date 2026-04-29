@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <meta charset="UTF-8">
     <title>藥材辨識榮譽殿堂</title>
     <style>
@@ -352,6 +353,52 @@
         }
     });
 
+    let lastKingName = null; // 用來儲存上一次抓到的第一名
+
+    async function checkWorldAnnouncement() {
+        try {
+            const res = await fetch(`${GAS_URL}?type=competition_rank`);
+            const data = await res.json();
+            
+            if (data.length > 0) {
+                const currentKing = data[0]; // 抓取目前的第一名
+                
+                // 如果是第一次執行，先記錄名字但不公告
+                if (lastKingName === null) {
+                    lastKingName = currentKing.name;
+                    return;
+                }
+                
+                // 核心邏輯：如果現在的第一名跟上次記錄的不同
+                if (currentKing.name !== lastKingName) {
+                    // 觸發全服公告特效
+                    Swal.fire({
+                        title: '🎊 全服公告：新任藥王誕生！',
+                        html: `恭喜 <b style="color:#8b4513; font-size:24px;">${currentKing.name}</b> 拔得頭籌！<br>
+                               目前以 <span style="color:#2d5a27;">${currentKing.score} 分</span> 暫居第一！`,
+                        icon: 'success',
+                        background: '#f4e4bc', // 羊皮紙色
+                        confirmButtonColor: '#8b4513',
+                        confirmButtonText: '瞻仰神農傳人',
+                        backdrop: `
+                            rgba(0,0,123,0.4)
+                            url("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJndnB3Znd4Z3R4Z3R4Z3R4Z3R4Z3R4Z3R4Z3R4Z3R4Z3R4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/3o7TKMGpxn6YvXqL9S/giphy.gif")
+                            left top
+                            no-repeat
+                        ` // 加上一點煙火效果
+                    });
+                    
+                    // 更新紀錄
+                    lastKingName = currentKing.name;
+                }
+            }
+        } catch (e) {
+            console.error("公告系統感應失敗:", e);
+        }
+    }
+    
+    // 每 20 秒偷偷檢查一次是否換人了
+    setInterval(checkWorldAnnouncement, 20000);    
 
     
 </script>
