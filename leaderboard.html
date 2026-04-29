@@ -3,6 +3,7 @@
 <head>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>藥材辨識榮譽殿堂</title>
     <style>
         /* 基礎背景與字體 */
@@ -10,13 +11,13 @@
             background-color: #2c3e50; 
             color: #4a3728; 
             font-family: "Microsoft JhengHei", sans-serif; 
-            padding: 20px; 
-            padding-top: 100px; /* 留位置給頂部按鈕 */
+            padding: 10px; 
+            padding-top: 100px; 
             margin: 0;
         }
     
         /* 頂部選單導航 */
-        .top-nav-menu { position: fixed; top: 20px; right: 20px; z-index: 1000; text-align: right; }
+        .top-nav-menu { position: fixed; top: 15px; right: 15px; z-index: 1000; text-align: right; }
         .menu-toggle-btn {
             width: 50px; height: 50px; background: #8b4513; color: #f4e4bc;
             border: 3px double #f4e4bc; border-radius: 50%; font-size: 24px;
@@ -32,31 +33,30 @@
         .menu-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
     
-        /* 挑戰者資訊與按鈕 */
         .challenger-info { font-weight: bold; color: #2d5a27; margin-bottom: 10px; border-bottom: 1px dashed #8b4513; padding-bottom: 5px; font-size: 14px; }
         .nav-buttons { display: flex; flex-direction: column; gap: 10px; }
         .nav-row { display: flex; gap: 5px; justify-content: flex-end; }
         .nav-btn { background: #8b4513; color: white; border: none; padding: 5px 10px; cursor: pointer; text-decoration: none; font-size: 12px; border-radius: 3px; }
     
         /* 排行榜容器 */
-        .board-container { max-width: 900px; margin: auto; display: flex; flex-direction: column; gap: 30px; }
-        .section { background: #f4e4bc; border: 6px double #8b4513; padding: 20px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        h2 { text-align: center; color: #2d5a27; border-bottom: 2px solid #8b4513; padding-bottom: 10px; margin-top: 0; }
+        .board-container { max-width: 900px; margin: auto; display: flex; flex-direction: column; gap: 20px; }
+        .section { background: #f4e4bc; border: 6px double #8b4513; padding: 15px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        h2 { text-align: center; color: #2d5a27; border-bottom: 2px solid #8b4513; padding-bottom: 10px; margin-top: 0; font-size: 20px; }
         
-        /* --- 關鍵：響應式表格優化 --- */
-        .table-wrapper { width: 100%; overflow-x: auto; } /* 讓表格在手機上可左右滑動 */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; min-width: 300px; }
-        th { background: #8b4513; color: white; padding: 10px; font-size: 14px; white-space: nowrap; }
-        td { border-bottom: 1px solid #8b4513; padding: 12px 5px; text-align: center; font-size: 15px; }
+        .table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; } 
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background: #8b4513; color: white; padding: 10px 5px; font-size: 14px; white-space: nowrap; }
+        td { border-bottom: 1px solid #8b4513; padding: 10px 5px; text-align: center; font-size: 15px; }
         .top1 { background: rgba(255, 215, 0, 0.2); font-weight: bold; }
         .rank-value { color: #8b4513; font-weight: bold; }
-        .btn-input { background: #2d5a27; color: white; border: none; padding: 12px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 15px; border-radius: 5px; }
+        .btn-input { background: #2d5a27; color: white; border: none; padding: 12px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 15px; border-radius: 5px; font-size: 16px; }
     
-        /* 手機版隱藏欄位 (螢幕小於 600px 生效) */
+        /* 手機版優化 */
         @media (max-width: 600px) {
             .mobile-hide { display: none; }
-            td, th { padding: 10px 5px; font-size: 13px; }
-            .section { padding: 10px; }
+            td, th { font-size: 13px; padding: 8px 3px; }
+            h2 { font-size: 18px; }
+            body { padding-top: 80px; }
         }
     </style>
 </head>
@@ -64,20 +64,13 @@
 
 <div class="top-nav-menu">
     <button class="menu-toggle-btn" onclick="toggleMenu()" id="main-menu-btn">📜</button>
-    
     <div class="menu-content" id="nav-menu-content">
-        <div class="challenger-info">
-            ⚔️當前挑戰者 <span id="display-username">讀取中...</span>
-        </div>
-        
+        <div class="challenger-info">⚔️ 當前挑戰者 <span id="display-username">讀取中...</span></div>
         <div class="nav-buttons">
             <div class="music-control">
                 <button id="music-btn" onclick="toggleMusic()" style="width:100%; border:1px solid #8b4513; background:#2d5a27; color:#f4e4bc; padding:5px; border-radius:3px;">🎵 播放音樂</button>
-                <audio id="bg-music" loop>
-                    <source src="bgm.mp3" type="audio/mpeg">
-                </audio>
+                <audio id="bg-music" loop><source src="bgm.mp3" type="audio/mpeg"></audio>
             </div>
-            
             <div class="nav-row">
                 <a href="dashboard.html" class="nav-btn" style="flex:1; text-align:center;">🏰 大廳</a>
                 <a href="index.html" class="nav-btn" style="flex:1; text-align:center;" onclick="return confirm('確定登出？')">🚪 登出</a>
@@ -95,7 +88,9 @@
                     <tr>
                         <th>名次</th>
                         <th>系級</th>
-                        <th class="mobile-hide">原始得分</th> <th class="mobile-hide">耗時</th>     <th>加權總分</th> 
+                        <th class="mobile-hide">原始得分</th> 
+                        <th class="mobile-hide">耗時</th>     
+                        <th>加權總分</th> 
                     </tr>
                 </thead>
                 <tbody id="comp-rank-body">
@@ -108,34 +103,52 @@
 
     <div class="section">
         <h2>🏆 總分英雄榜</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>位次</th>
-                    <th>系級</th>
-                    <th>總分</th>
-                </tr>
-            </thead>
-            <tbody id="general-rank-body">
-                <tr><td colspan="3">正在讀取各路英雄紀錄...</td></tr>
-            </tbody>
-        </table>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>位次</th>
+                        <th>系級</th>
+                        <th>總分</th>
+                    </tr>
+                </thead>
+                <tbody id="general-rank-body">
+                    <tr><td colspan="3">正在讀取各路英雄紀錄...</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbw5QYBkPUOlNSEAvohC3LcBmJTTYwE-rD0WmZwRe2e-xOpZ-zsnhTNbbQ8UBrKngiK0/exec"; // 記得換成最新部署的網址
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbw5QYBkPUOlNSEAvohC3LcBmJTTYwE-rD0WmZwRe2e-xOpZ-zsnhTNbbQ8UBrKngiK0/exec"; 
     const MASTER_KEY = "CMU2026";
+
+    // 核心初始化
+    window.onload = () => {
+        loadCompetitionRank();
+        loadGeneralRank();
+        checkWorldAnnouncement(); // 啟動公告檢查
+        
+        const savedName = localStorage.getItem('username');
+        if (savedName) document.getElementById('display-username').innerText = savedName;
+
+        // 設定定時任務
+        setInterval(() => { loadCompetitionRank(); loadGeneralRank(); }, 60000);
+        setInterval(checkWorldAnnouncement, 20000); // 每 20 秒檢查一次是否有新第一名
+    };
 
     async function loadCompetitionRank() {
         try {
-            const res = await fetch(`${GAS_URL}?type=competition_rank`);
+            const res = await fetch(`${GAS_URL}?type=competition_rank&t=${new Date().getTime()}`);
             const data = await res.json();
             document.getElementById('comp-rank-body').innerHTML = data.map((p, i) => `
                 <tr class="${i===0?'top1':''}">
                     <td>${i+1}</td>
                     <td>${p.name} <br><small>${p.grade}</small></td>
-                    <td class="mobile-hide">${p.score} 分</td> <td class="mobile-hide">${p.time} 秒</td>   <td class="rank-value">${p.rankValue.toFixed(1)}</td>
+                    <td class="mobile-hide">${p.score} 分</td> 
+                    <td class="mobile-hide">${p.time} 秒</td>   
+                    <td class="rank-value">${p.rankValue.toFixed(1)}</td>
                 </tr>
             `).join('');
         } catch(e) { console.error(e); }
@@ -143,7 +156,7 @@
 
     async function loadGeneralRank() {
         try {
-            const res = await fetch(GAS_URL);
+            const res = await fetch(`${GAS_URL}?t=${new Date().getTime()}`);
             const data = await res.json();
             document.getElementById('general-rank-body').innerHTML = data.map((p, i) => `
                 <tr class="${i===0?'top1':''}">
@@ -158,100 +171,48 @@
     async function inputCompScore() {
         const key = prompt("請關主輸入認證金鑰：");
         if (key !== MASTER_KEY) return alert("金鑰錯誤！");
-
         const score = prompt("請輸入比賽得分 (0-100)：");
         const time = prompt("請輸入完成秒數：");
         
         if (score && time) {
             const name = localStorage.getItem('username');
             const grade = localStorage.getItem('usergrade');
-
             await fetch(GAS_URL, {
                 method: 'POST',
                 mode: 'no-cors',
-                body: JSON.stringify({
-                    action: "competition",
-                    name: name,
-                    grade: grade,
-                    score: parseFloat(score),
-                    time: parseFloat(time)
-                })
+                body: JSON.stringify({ action: "competition", name: name, grade: grade, score: parseFloat(score), time: parseFloat(time) })
             });
             alert("成績已更新！公式：(2*分數 + (100 - 秒數)) / 3");
             loadCompetitionRank();
+            setTimeout(checkWorldAnnouncement, 2000); // 錄入後立刻檢查一次公告
         }
     }
 
-    window.onload = () => {
-        loadCompetitionRank();
-        loadGeneralRank();
-        const savedName = localStorage.getItem('username');
-        if (savedName) document.getElementById('display-username').innerText = savedName;
-    };
-    
-    setInterval(() => { loadCompetitionRank(); loadGeneralRank(); }, 60000);
-
+    // 音樂與選單邏輯
     function toggleMusic() {
-    const music = document.getElementById('bg-music');
-    const btn = document.getElementById('music-btn');
-
-    if (music.paused) {
-        music.play();
-        btn.innerText = "🔇 靜音";
-        btn.classList.add('playing');
-        localStorage.setItem('musicStatus', 'on');
-    } else {
-        music.pause();
-        btn.innerText = "🎵 播放音樂";
-        btn.classList.remove('playing');
-        localStorage.setItem('musicStatus', 'off');
-        }
-    }
-    
-    // 頁面載入時，檢查之前的音樂設定
-    // 統一處理頁面載入邏輯
-    document.addEventListener('DOMContentLoaded', function() {
-        // 1. 顯示玩家名稱
-        const savedName = localStorage.getItem('username');
-        const displaySpan = document.getElementById('display-username');
-        if (savedName) {
-            displaySpan.innerText = savedName;
-        } else {
-            displaySpan.innerText = "神祕俠客";
-        }
-    
-        // 2. 音樂初始狀態檢查
         const music = document.getElementById('bg-music');
         const btn = document.getElementById('music-btn');
-        const status = localStorage.getItem('musicStatus');
-        
-        // 設定初始音量，避免太吵
-        music.volume = 0.4;
-    
-        if (status === 'on') {
-            music.play().then(() => {
-                btn.innerText = "🔇 靜音";
-                btn.classList.add('playing');
-            }).catch(e => console.log("等待玩家互動後播放音樂"));
+        if (music.paused) {
+            music.play();
+            btn.innerText = "🔇 靜音";
+            btn.classList.add('playing');
+            localStorage.setItem('musicStatus', 'on');
+        } else {
+            music.pause();
+            btn.innerText = "🎵 播放音樂";
+            btn.classList.remove('playing');
+            localStorage.setItem('musicStatus', 'off');
         }
-    });
+    }
 
     function toggleMenu() {
         const menu = document.getElementById('nav-menu-content');
         const btn = document.getElementById('main-menu-btn');
-        
         menu.classList.toggle('active');
-        
-        // 變換按鈕圖示，開啟時變成「X」或「🗺️」
-        if (menu.classList.contains('active')) {
-            btn.innerText = "❌";
-        } else {
-            btn.innerText = "📜";
-        }
+        btn.innerText = menu.classList.contains('active') ? "❌" : "📜";
     }
-    
-    // 點擊選單以外的地方自動關閉 (選配，增加使用者體驗)
-    window.addEventListener('click', function(e) {
+
+    window.addEventListener('click', (e) => {
         const menu = document.getElementById('nav-menu-content');
         const btn = document.getElementById('main-menu-btn');
         if (!menu.contains(e.target) && !btn.contains(e.target)) {
@@ -260,50 +221,32 @@
         }
     });
 
+    // 公告系統
     let lastKingName = null; 
-    
     async function checkWorldAnnouncement() {
         try {
-            // 加上快取失效戳記，確保抓到的是最新資料
             const res = await fetch(`${GAS_URL}?type=competition_rank&t=${new Date().getTime()}`);
             const data = await res.json();
-            
             if (data.length > 0) {
                 const currentKing = data[0];
-                
-                // 第一次載入時先記住名字
                 if (lastKingName === null) {
                     lastKingName = currentKing.name;
-                    console.log("公告系統已啟動，目前第一名是：" + lastKingName);
                     return;
                 }
-                
-                // 只有名字變動（換人當第一名）才廣播
                 if (currentKing.name !== lastKingName) {
                     Swal.fire({
                         title: '🎊 全服公告：新任藥王誕生！',
-                        html: `恭喜 <b style="color:#8b4513; font-size:24px;">${currentKing.name}</b> 拔得頭籌！<br>
-                               目前以 <span style="color:#2d5a27;">${currentKing.score} 分</span> 暫居第一！`,
+                        html: `恭喜 <b style="color:#8b4513; font-size:24px;">${currentKing.name}</b> 拔得頭籌！<br>目前暫居第一！`,
                         icon: 'success',
                         background: '#f4e4bc',
                         confirmButtonColor: '#8b4513',
-                        confirmButtonText: '瞻仰神農傳人',
-                        backdrop: `
-                            rgba(0,0,123,0.4)
-                            url("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJndnB3Znd4Z3R4Z3R4Z3R4Z3R4Z3R4Z3R4Z3R4Z3R4Z3R4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/3o7TKMGpxn6YvXqL9S/giphy.gif")
-                            left top
-                            no-repeat
-                        `
+                        backdrop: `rgba(0,0,123,0.4) url("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJndnB3Znd4Z3R4Z3R4Z3R4Z3R4Z3R4Z3R4Z3R4Z3R4Z3R4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/3o7TKMGpxn6YvXqL9S/giphy.gif") left top no-repeat`
                     });
                     lastKingName = currentKing.name;
                 }
             }
-        } catch (e) {
-            console.error("公告系統感應失敗:", e);
-        }
+        } catch (e) { console.error("公告感應失敗", e); }
     }
-
-    
 </script>
 </body>
 </html>
